@@ -1,4 +1,7 @@
 # ARMadillo - Traffic Filtering Made Easy
+
+[![GitHub Super-Linter](https://github.com/gapu-team/ARMadillo/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
 ARM based solution serving as your first line of defense against malicious packets.
 
 Network traffic filtering mechanism, similar concept to Unix iptables.
