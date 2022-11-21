@@ -1,18 +1,8 @@
 import typer
-import configparser
+import utils
 from tabulate import tabulate
 
 app = typer.Typer()
-
-policy_file_path = "./test.ini"
-dns_policy_path  = "./dns.ini"
-dpi_policy_path  = "./dpi.ini"
-
-# Return config parser from file
-def get_config(file_path):
-    config = configparser.ConfigParser()
-    config.read(file_path)
-    return config
 
 # Return all rows in array
 def get_rows(config):
@@ -26,24 +16,24 @@ def get_rows(config):
 
     return table
 
-@app.command()
+@app.command(help="list all policies")
 def policy():
-    filepath = policy_file_path
-    config   = get_config(filepath)
+    filepath = utils.policy_file_path
+    config   = utils.get_config(filepath)
     table = get_rows(config)
     print(tabulate(table,headers=["Source Port", "Destination Port", "Source Address", "Destination Address", "Protocol", "Enabled"]))
 
-@app.command()
+@app.command(help="list all dns policies")
 def policy_dns():
-    filepath = dns_policy_path
-    config   = get_config(filepath)
+    filepath = utils.dns_policy_path
+    config   = utils.get_config(filepath)
     table = get_rows(config)
     print(tabulate(table,headers=["Domain", "Enabled"]))
 
-@app.command()
+@app.command(help="list all dpi policies")
 def policy_dpi():
-    filepath = dpi_policy_path
-    config   = get_config(filepath)
+    filepath = utils.dpi_policy_path
+    config   = utils.get_config(filepath)
     table = get_rows(config)
     print(tabulate(table,headers=["String", "Enabled"]))
 
