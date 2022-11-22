@@ -1,5 +1,4 @@
-![ARMadillo-logo](https://user-images.githubusercontent.com/100173467/203181147-e1d61fb0-426b-44f4-8a9b-08b7c6793450.png)
-
+![ARMadillo-logo](./ARMadillo-logo.png)
 
 # ARMadillo - Traffic Filtering Made Easy
 
