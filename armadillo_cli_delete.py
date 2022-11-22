@@ -4,7 +4,7 @@ import utils
 app = typer.Typer()
 
 @app.command()
-def policy(policy_id: str = typer.Option(...,help="The policy id to delete e.g: --policy-id=policy-1")):
+def policy(policy_id: str = typer.Option(...,help="The policy id to delete e.g: --policy-id=policy_1")):
     filepath = utils.policy_file_path
     config   = utils.get_config(filepath)
     config.remove_section(policy_id)
