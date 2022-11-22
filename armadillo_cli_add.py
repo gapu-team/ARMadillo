@@ -64,6 +64,5 @@ def policy_dpi(
     config.set(next_section_name, 'enabled', str(int(enabled)))
     utils.save_to_file(config, filepath)
 
-
 if __name__ == "__main__":
     app()
