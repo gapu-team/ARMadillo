@@ -23,7 +23,7 @@
 DOCA_LOG_REGISTER(FLOW_DROP::MAIN);
 
 /* Sample's Logic */
-int flow_drop(int nb_queues, bool hacked_param);
+int flow_drop(int nb_queues, int* src_ip, int* dest_ip, int src_port, int dest_port);
 
 /*
  * Sample main function
@@ -35,19 +35,6 @@ int flow_drop(int nb_queues, bool hacked_param);
 int
 main(int argc, char **argv)
 {
-
-	/*
-	 * Try modifing flow_drop() signature
-	 */
-
-	printf("Attempting jump\n");
-	flow_drop(0, true);
-	printf("Returned\n");
-
-	/*
-	 * Original code
-	 */
-
 	doca_error_t result;
 	int ret;
 	int exit_status = EXIT_SUCCESS;
@@ -57,6 +44,27 @@ main(int argc, char **argv)
 		.port_config.nb_hairpin_q = 1,
 		.sft_config = {0},
 	};
+
+	/*
+	 * Try modifing flow_drop() signature
+	 */
+
+	FILE *config = fopen("config.txt", "r");
+
+	if (config == NULL)
+	{
+		printf("Error! Could not open config file\n");
+		return EXIT_FAILURE;
+	}
+
+	int src_ip[4], dest_ip[4], src_port, dest_port;
+
+	fscanf(config, "%d.%d.%d.%d,%d.%d.%d.%d,%d,%d", src_ip, src_ip + 1, src_ip + 2, src_ip + 3, dest_ip, dest_ip + 1, dest_ip + 2, dest_ip + 3, &src_port, &dest_port);
+	fclose(config);
+
+	/*
+	 * Original code
+	 */
 
 	result = doca_argp_init("flow_drop", NULL);
 	if (result != DOCA_SUCCESS) {
@@ -82,7 +90,7 @@ main(int argc, char **argv)
 
 	/* run sample */
 	//ret = flow_drop(dpdk_config.port_config.nb_queues);
-	ret = flow_drop(dpdk_config.port_config.nb_queues, false);
+	ret = flow_drop(dpdk_config.port_config.nb_queues, int* src_ip, int* dest_ip, int src_port, int dest_port);
 	if (ret < 0) {
 		DOCA_LOG_ERR("flow_drop sample encountered errors");
 		exit_status = EXIT_FAILURE;

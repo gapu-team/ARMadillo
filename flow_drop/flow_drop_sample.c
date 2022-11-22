@@ -161,7 +161,7 @@ create_drop_pipe(struct doca_flow_port *port, struct doca_flow_pipe *hairpin_pip
  * @return: 0 on success, negative value otherwise and error is set.
  */
 int
-add_drop_pipe_entry(struct doca_flow_pipe *pipe, struct doca_flow_port *port, struct doca_flow_pipe_entry **entry, struct doca_flow_error *error)
+add_drop_pipe_entry(struct doca_flow_pipe *pipe, struct doca_flow_port *port, struct doca_flow_pipe_entry **entry, struct doca_flow_error *error, int* src_ip, int* dest_ip, int src_p, int dest_p)
 {
 	struct doca_flow_match match;
 	struct doca_flow_actions actions;
@@ -169,10 +169,10 @@ add_drop_pipe_entry(struct doca_flow_pipe *pipe, struct doca_flow_port *port, st
 	int num_of_entries = 1;
 
 	/* example 5-tuple to drop */
-	doca_be32_t dst_ip_addr = BE_IPV4_ADDR(8, 8, 8, 8);
-	doca_be32_t src_ip_addr = BE_IPV4_ADDR(1, 2, 3, 4);
-	doca_be16_t dst_port = rte_cpu_to_be_16(80);
-	doca_be16_t src_port = rte_cpu_to_be_16(1234);
+	doca_be32_t dst_ip_addr = BE_IPV4_ADDR(*dest_ip, *(dest_ip + 1), *(dest_ip + 2), *(dest_ip + 3));
+	doca_be32_t src_ip_addr = BE_IPV4_ADDR(*src_ip, *(src_ip + 1), *(src_ip + 2), *(src_ip + 3));
+	doca_be16_t dst_port = rte_cpu_to_be_16(dest_p);
+	doca_be16_t src_port = rte_cpu_to_be_16(src_p);
 
 	memset(&match, 0, sizeof(match));
 	memset(&actions, 0, sizeof(actions));
@@ -197,14 +197,14 @@ add_drop_pipe_entry(struct doca_flow_pipe *pipe, struct doca_flow_port *port, st
  * @return: 0 on success and negative value otherwise.
  */
 int
-flow_drop(int nb_queues, bool hacked_param)
+flow_drop(int nb_queues, int* src_ip, int* dest_ip, int src_port, int dest_port)
 {
-
-	if (hacked_param)
-	{
-		printf("Successfuly landed in flow_drop()\n");
-		return 1234;
-	}
+	/*
+	 * src_ip - int array of 4 octets for source ip
+	 * dest_ip - int array of 4 octets for destination ip
+	 * src_port - int number of source port
+	 * dest_port - int number of destination port
+	 */
 
 	const int nb_ports = 2;
 	struct doca_flow_resources resource = {0};
@@ -258,7 +258,7 @@ flow_drop(int nb_queues, bool hacked_param)
 			return -1;
 		}
 
-		result = add_drop_pipe_entry(pipe, ports[port_id], &entry[port_id], &error);
+		result = add_drop_pipe_entry(pipe, ports[port_id], &entry[port_id], &error, src_ip, dest_ip, src_port, dest_port);
 		if (result < 0) {
 			DOCA_LOG_ERR("Failed to add entry - %s (%u)", error.message, error.type);
 			destroy_doca_flow_ports(nb_ports, ports);
