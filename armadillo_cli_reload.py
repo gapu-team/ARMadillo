@@ -24,7 +24,7 @@ def all():
     except:
         pass
     try:
-        os.kill(subprocess.run(["bash", "-c", "ps aux | grep doca_dns | grep -v grep | awk '{print $2}'"]))
+        os.kill(subprocess.run(["bash", "-c", "ps aux | grep doca_dns_filter | grep -v grep | awk '{print $2}'"]))
     except:
         pass
 
