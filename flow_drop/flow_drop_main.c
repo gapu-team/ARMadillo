@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <doca_argp.h>
 #include <doca_flow.h>
@@ -57,7 +58,9 @@ main(int argc, char **argv)
 	 * Try modifing flow_drop() signature
 	 */
 
-	FILE *config = fopen("config.txt", "r");
+	char config_path[256];
+	strcat(strcpy(config_path, getenv("HOME")), "/.armadillo/parsed_policy.csv");
+	FILE *config = fopen(config_path, "r");
 
 	if (config == NULL)
 	{
@@ -98,7 +101,7 @@ main(int argc, char **argv)
 
 	/* run sample */
 	//ret = flow_drop(dpdk_config.port_config.nb_queues);
-	ret = flow_drop(dpdk_config.port_config.nb_queues, int* src_ip, int* dest_ip, int src_port, int dest_port);
+	ret = flow_drop(dpdk_config.port_config.nb_queues, src_ip, dest_ip, src_port, dest_port);
 	if (ret < 0) {
 		DOCA_LOG_ERR("flow_drop sample encountered errors");
 		exit_status = EXIT_FAILURE;
