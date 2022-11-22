@@ -1,14 +1,14 @@
 import typer
 import utils
 
-app              = typer.Typer()
-SECTION_NAME     = "policy"
+app = typer.Typer()
+SECTION_NAME = "policy"
 
 # Generate new section name
 def get_next_section_name(config):
     new_section = SECTION_NAME
     if len(config.sections()) != 0:
-        new_section += '_' + str(int(config.sections()[-1].split('-')[1]) + 1)
+        new_section += '_' + str(int(config.sections()[-1].split('_')[1]) + 1)
     else:
         new_section += '_1'
 
@@ -25,7 +25,7 @@ def policy(
 
     filepath = utils.policy_file_path
 
-    config            = utils.get_config(filepath)
+    config = utils.get_config(filepath)
     next_section_name = get_next_section_name(config)
     config.add_section(next_section_name)
     config.set(next_section_name, 'src_port', src_port)
@@ -43,7 +43,7 @@ def policy_dns(
 
     filepath = utils.dns_policy_path
 
-    config            = utils.get_config(filepath)
+    config = utils.get_config(filepath)
     next_section_name = get_next_section_name(config)
     config.add_section(next_section_name)
     config.set(next_section_name, 'domain', domain)
@@ -57,7 +57,7 @@ def policy_dpi(
 
     filepath = utils.dpi_policy_path
 
-    config            = utils.get_config(filepath)
+    config = utils.get_config(filepath)
     next_section_name = get_next_section_name(config)
     config.add_section(next_section_name)
     config.set(next_section_name, 'string', string)
