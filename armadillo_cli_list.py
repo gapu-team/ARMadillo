@@ -21,22 +21,21 @@ def policy():
     filepath = utils.policy_file_path
     config   = utils.get_config(filepath)
     table = get_rows(config)
-    print(tabulate(table,headers=["Source Port", "Destination Port", "Source Address", "Destination Address", "Protocol", "Enabled"]))
+    print(tabulate(table, headers=["Source Port", "Destination Port", "Source Address", "Destination Address", "Protocol", "Enabled"]))
 
 @app.command(help="list all dns policies")
 def policy_dns():
     filepath = utils.dns_policy_path
     config   = utils.get_config(filepath)
     table = get_rows(config)
-    print(tabulate(table,headers=["Domain", "Enabled"]))
+    print(tabulate(table, headers=["Domain", "Enabled"]))
 
 @app.command(help="list all dpi policies")
 def policy_dpi():
     filepath = utils.dpi_policy_path
     config   = utils.get_config(filepath)
     table = get_rows(config)
-    print(tabulate(table,headers=["String", "Enabled"]))
-
+    print(tabulate(table, headers=["String", "Enabled"]))
 
 if __name__ == "__main__":
     app()
