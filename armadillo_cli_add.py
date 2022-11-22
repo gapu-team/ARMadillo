@@ -8,7 +8,7 @@ SECTION_NAME     = "policy"
 def get_next_section_name(config):
     new_section = ""
     if len(config.sections()) != 0:
-        new_section = SECTION_NAME+'-'+str(int(config.sections()[-1].split('-')[1])+1)
+        new_section += '_' + str(int(config.sections()[-1].split('-')[1]) + 1)
     else:
         new_section = SECTION_NAME+'-1'
 
