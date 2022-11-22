@@ -6,7 +6,7 @@ SECTION_NAME     = "policy"
 
 # Generate new section name
 def get_next_section_name(config):
-    new_section = ""
+    new_section = SECTION_NAME
     if len(config.sections()) != 0:
         new_section += '_' + str(int(config.sections()[-1].split('-')[1]) + 1)
     else:
