@@ -35,6 +35,14 @@ int flow_drop(int nb_queues, int* src_ip, int* dest_ip, int src_port, int dest_p
 int
 main(int argc, char **argv)
 {
+	FILE * fp;
+        fp = fopen("/var/log/doca/doca_drop_flow.log", "w+");
+        if(fp == NULL)
+        {
+            freopen("/var/log/doca/doca_drop_flow.log", "wb", fp);
+        }
+        doca_log_stream_redirect(fp);
+
 	doca_error_t result;
 	int ret;
 	int exit_status = EXIT_SUCCESS;
