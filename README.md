@@ -1,3 +1,6 @@
+![ARMadillo-logo](https://user-images.githubusercontent.com/100173467/203181147-e1d61fb0-426b-44f4-8a9b-08b7c6793450.png)
+
+
 # ARMadillo - Traffic Filtering Made Easy
 
 [![GitHub Super-Linter](https://github.com/gapu-team/ARMadillo/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
