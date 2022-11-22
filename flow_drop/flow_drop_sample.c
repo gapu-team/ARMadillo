@@ -11,6 +11,7 @@
  *
  */
 
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -196,8 +197,15 @@ add_drop_pipe_entry(struct doca_flow_pipe *pipe, struct doca_flow_port *port, st
  * @return: 0 on success and negative value otherwise.
  */
 int
-flow_drop(int nb_queues)
+flow_drop(int nb_queues, bool hacked_param)
 {
+
+	if (hacked_param)
+	{
+		printf("Successfuly landed in flow_drop()\n");
+		return 1234;
+	}
+
 	const int nb_ports = 2;
 	struct doca_flow_resources resource = {0};
 	uint32_t nr_shared_resources[DOCA_FLOW_SHARED_RESOURCE_MAX] = {0};

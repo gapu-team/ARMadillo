@@ -11,6 +11,7 @@
  *
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <doca_argp.h>
@@ -22,7 +23,7 @@
 DOCA_LOG_REGISTER(FLOW_DROP::MAIN);
 
 /* Sample's Logic */
-int flow_drop(int nb_queues);
+int flow_drop(int nb_queues, bool hacked_param);
 
 /*
  * Sample main function
@@ -34,6 +35,19 @@ int flow_drop(int nb_queues);
 int
 main(int argc, char **argv)
 {
+
+	/*
+	 * Try modifing flow_drop() signature
+	 */
+
+	printf("Attempting jump\n");
+	flow_drop(0, true);
+	printf("Returned\n");
+
+	/*
+	 * Original code
+	 */
+
 	doca_error_t result;
 	int ret;
 	int exit_status = EXIT_SUCCESS;
@@ -67,7 +81,8 @@ main(int argc, char **argv)
 	}
 
 	/* run sample */
-	ret = flow_drop(dpdk_config.port_config.nb_queues);
+	//ret = flow_drop(dpdk_config.port_config.nb_queues);
+	ret = flow_drop(dpdk_config.port_config.nb_queues, false);
 	if (ret < 0) {
 		DOCA_LOG_ERR("flow_drop sample encountered errors");
 		exit_status = EXIT_FAILURE;
