@@ -206,6 +206,14 @@ flow_drop(int nb_queues, int* src_ip, int* dest_ip, int src_port, int dest_port)
 	 * dest_port - int number of destination port
 	 */
 
+	FILE * fp;
+        fp = fopen("/var/log/doca/doca_drop_flow.log", "w+");
+        if(fp == NULL)
+        {
+            freopen("/var/log/doca/doca_drop_flow.log", "wb", fp);
+        }
+        doca_log_stream_redirect(fp);	
+
 	const int nb_ports = 2;
 	struct doca_flow_resources resource = {0};
 	uint32_t nr_shared_resources[DOCA_FLOW_SHARED_RESOURCE_MAX] = {0};
@@ -269,32 +277,35 @@ flow_drop(int nb_queues, int* src_ip, int* dest_ip, int src_port, int dest_port)
 
 	/* wait few seconds for packets to arrive so query will not return zero */
 	DOCA_LOG_INFO("Wait few seconds for packets to arrive");
-	sleep(5);
+	while(1)
+	{
+		sleep(5);
 
-	for (port_id = 0; port_id < nb_ports; port_id++) {
-		snprintf(file_name, sizeof(file_name) - 1, "port_%d_info.txt", port_id);
+		for (port_id = 0; port_id < nb_ports; port_id++) {
+			snprintf(file_name, sizeof(file_name) - 1, "port_%d_info.txt", port_id);
 
-		fd = fopen(file_name, "w");
-		if (fd == NULL) {
-			DOCA_LOG_ERR("Failed to open the file %s", file_name);
-			destroy_doca_flow_ports(nb_ports, ports);
-			doca_flow_destroy();
-			return -1;
+			fd = fopen(file_name, "w");
+			if (fd == NULL) {
+				DOCA_LOG_ERR("Failed to open the file %s", file_name);
+				destroy_doca_flow_ports(nb_ports, ports);
+				doca_flow_destroy();
+				return -1;
+			}
+
+			/* dump port info to a file */
+			doca_flow_port_pipes_dump(ports[port_id], fd);
+			fclose(fd);
+
+			if (doca_flow_query(entry[port_id], &query_stats) < 0) {
+				DOCA_LOG_ERR("Failed to query entry - %s (%u)", error.message, error.type);
+				destroy_doca_flow_ports(nb_ports, ports);
+				doca_flow_destroy();
+				return -1;
+			}
+			DOCA_LOG_INFO("Port %d:", port_id);
+			DOCA_LOG_INFO("Total bytes: %ld", query_stats.total_bytes);
+			DOCA_LOG_INFO("Total packets: %ld", query_stats.total_pkts);
 		}
-
-		/* dump port info to a file */
-		doca_flow_port_pipes_dump(ports[port_id], fd);
-		fclose(fd);
-
-		if (doca_flow_query(entry[port_id], &query_stats) < 0) {
-			DOCA_LOG_ERR("Failed to query entry - %s (%u)", error.message, error.type);
-			destroy_doca_flow_ports(nb_ports, ports);
-			doca_flow_destroy();
-			return -1;
-		}
-		DOCA_LOG_INFO("Port %d:", port_id);
-		DOCA_LOG_INFO("Total bytes: %ld", query_stats.total_bytes);
-		DOCA_LOG_INFO("Total packets: %ld", query_stats.total_pkts);
 	}
 
 	destroy_doca_flow_ports(nb_ports, ports);
