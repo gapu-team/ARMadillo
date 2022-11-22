@@ -98,7 +98,7 @@ main(int argc, char **argv)
 
 	/* run sample */
 	//ret = flow_drop(dpdk_config.port_config.nb_queues);
-	ret = flow_drop(dpdk_config.port_config.nb_queues, int* src_ip, int* dest_ip, int src_port, int dest_port);
+	ret = flow_drop(dpdk_config.port_config.nb_queues, src_ip, dest_ip, src_port, dest_port);
 	if (ret < 0) {
 		DOCA_LOG_ERR("flow_drop sample encountered errors");
 		exit_status = EXIT_FAILURE;
