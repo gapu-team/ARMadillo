@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <doca_argp.h>
 #include <doca_flow.h>
@@ -57,7 +58,9 @@ main(int argc, char **argv)
 	 * Try modifing flow_drop() signature
 	 */
 
-	FILE *config = fopen("config.txt", "r");
+	char config_path[256];
+	strcat(strcpy(config_path, getenv("HOME")), "/.armadillo/parsed_policy.csv");
+	FILE *config = fopen(config_path, "r");
 
 	if (config == NULL)
 	{
